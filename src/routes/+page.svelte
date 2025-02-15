@@ -5,7 +5,7 @@
     Menu, Search, Home, Library, History, Clock, ThumbsUp, Youtube, 
     ChevronDown, ChevronUp, Bell, User, Compass, PlaySquare, Film, 
     Plus, Users, ArrowLeft, X, Mic, Radio, Trophy, Settings, 
-    Flag, HelpCircle, MessageSquare 
+    Flag, HelpCircle, MessageSquare, ChevronRight
   } from "lucide-svelte";
   import { fly } from "svelte/transition";
   import VideoCard from "$lib/components/VideoCard.svelte";
@@ -37,7 +37,7 @@
   ];
 
   $: visibleShorts = shorts.slice(0, showAllShorts ? shorts.length : isMobile ? 4 : 6);
-  $: recommendedRestSection = trendingVideos.slice(8);
+  //$: recommendedRestSection = trendingVideos.slice(8);
 
   function getVideoId(video: YouTubeVideo): string {
     return typeof video.id === 'string' ? video.id : video.id.videoId;
@@ -124,7 +124,6 @@
       { icon: Trophy, label: 'Sports' }
     ]},
     { section: 'more', title: 'More from YouTube', items: [
-      { icon: Youtube, label: 'YouTube Premium' },
       { icon: PlaySquare, label: 'YouTube Studio' },
       { icon: Radio, label: 'YouTube Music' },
       { icon: User, label: 'YouTube Kids' }
@@ -234,6 +233,29 @@
   const clearSearchQuery = () => {
     searchQuery = "";
   };
+
+  // Add a new array for shorts data
+  let shortsData = [
+    { id: 'short1', title: 'Funny Cat Moments', views: '1.2M', duration: '0:30', videoUrl: 'https://www.youtube.com/shorts/XyNlqQId-nk' },
+    { id: 'short2', title: 'Amazing Magic Trick', views: '500K', duration: '0:15', videoUrl: 'https://www.youtube.com/shorts/Z8RWpfhB0eU' },
+    { id: 'short3', title: 'Quick Cooking Tip', views: '750K', duration: '0:45', videoUrl: 'https://www.youtube.com/shorts/PUP7U5vTMM0' },
+    { id: 'short4', title: 'Incredible Skateboard Trick', views: '2M', duration: '0:20', videoUrl: 'https://www.youtube.com/shorts/hkBKAa-I0U0' },
+    { id: 'short5', title: 'Cute Puppy Compilation', views: '3.5M', duration: '1:00', videoUrl: 'https://www.youtube.com/shorts/AZ2ZPmEfjvU' },
+    { id: 'short6', title: 'Life Hack: Folding Clothes', views: '900K', duration: '0:40', videoUrl: 'https://www.youtube.com/shorts/uz6rjbw0ZA0' },
+  ];
+
+  // Function to handle clicking on a short
+  function handleShortClick(videoUrl: string) {
+    window.open(videoUrl, '_blank');
+  }
+
+  function chunkArray(array: any[], size: number) {
+    return Array.from({ length: Math.ceil(array.length / size) }, (v, i) =>
+      array.slice(i * size, i * size + size)
+    );
+  }
+
+  $: videoChunks = chunkArray(trendingVideos, 4);
 </script>
 
 <style lang="postcss">
@@ -380,7 +402,7 @@
         <Menu class="h-5 w-5" />
       </Button>
       <a href="/" class="flex items-center">
-        <img src={youTube} alt="YouTube" class="h-5" />
+        <img src={youTube || "/placeholder.svg"} alt="YouTube" class="h-5" />
       </a>
     </div>
     <div class="hidden md:flex flex-1 justify-center max-w-[600px]">
@@ -544,7 +566,7 @@
         <div class="px-4 py-3 text-xs text-muted-foreground">
           <p class="mb-3">About Press Copyright Contact us Creators Advertise Developers</p>
           <p class="mb-3">Terms Privacy Policy & Safety How YouTube works Test new features</p>
-          <p> 2023 Google LLC</p>
+          <p> 2025 Giddel Clone</p>
         </div>
       {/if}
     </aside>
@@ -623,7 +645,7 @@
         <div class="px-3 py-3 text-[13px] text-muted-foreground border-t mt-auto">
           <p class="mb-3">About Press Copyright Contact us Creators Advertise Developers</p>
           <p class="mb-3">Terms Privacy Policy & Safety How YouTube works Test new features</p>
-          <p class="text-[12px] text-muted-foreground/70"> 2023 Google LLC</p>
+          <p class="text-[12px] text-muted-foreground/70"> 2025 Giddel Clone</p>
         </div>
       {/if}
     </nav>
@@ -677,78 +699,64 @@
           {/each}
         </div>
 
-        <!-- Recommended Videos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-          {#each trendingVideos as video (getVideoId(video))}
-            <button
-              class="group w-full text-left"
-              on:click={() => navigateToVideo(getVideoId(video))}
-              on:keydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  navigateToVideo(getVideoId(video));
-                }
-              }}
-              aria-label={`Watch ${video.snippet.title}`}
-            >
-              <VideoCard {video} />
-            </button>
-          {/each}
-        </div>
-
         <!-- Shorts Section -->
-        {#if shorts.length > 0}
-          <section class="my-8">
-            <div class="flex items-center gap-2 mb-4">
-              <Youtube class="text-red-600 h-6 w-6" />
+        <section class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 mr-2 text-red-600 fill-current">
+                <path d="M17.77 10.32c-.77-.32-1.2-.5-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.65v-5.3L15 12l-5 2.65z"/>
+              </svg>
               <h2 class="text-lg font-semibold">Shorts</h2>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {#each visibleShorts as short (getVideoId(short))}
+            <Button variant="ghost" size="sm" class="text-blue-600">
+              View all
+              <ChevronRight class="ml-1 h-4 w-4" />
+            </Button>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {#each shortsData as short (short.id)}
+              <button
+                class="group w-full text-left"
+                on:click={() => handleShortClick(short.videoUrl)}
+              >
+                <div class="relative aspect-[9/16] mb-2">
+                  <img src={`https://i.ytimg.com/vi/${short.videoUrl.split('/').pop()}/hqdefault.jpg`} alt={short.title} class="object-cover w-full h-full rounded-xl" />
+                  <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-1 py-0.5 rounded">
+                    {short.duration}
+                  </div>
+                </div>
+                <h3 class="text-sm font-medium line-clamp-2">{short.title}</h3>
+                <p class="text-xs text-muted-foreground">{short.views} views</p>
+              </button>
+            {/each}
+          </div>
+        </section>
+
+        <!-- Recommended Videos -->
+        {#each videoChunks as chunk, index}
+          <section class="mb-8">
+            {#if index === 0}
+              <h2 class="text-lg font-semibold mb-4">Recommended Videos</h2>
+            {/if}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {#each chunk as video (getVideoId(video))}
                 <button
                   class="group w-full text-left"
-                  on:click={() => navigateToVideo(getVideoId(short))}
+                  on:click={() => navigateToVideo(getVideoId(video))}
                   on:keydown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      navigateToVideo(getVideoId(short));
+                      navigateToVideo(getVideoId(video));
                     }
                   }}
-                  aria-label={`Watch ${short.snippet.title}`}
+                  aria-label={`Watch ${video.snippet.title}`}
                 >
-                  <ShortsCard video={short} />
+                  <VideoCard {video} />
                 </button>
               {/each}
             </div>
-            {#if shorts.length > visibleShorts.length}
-              <button
-                class="mt-4 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                on:click={toggleShorts}
-              >
-                {showAllShorts ? 'Show less' : 'Show more'}
-              </button>
-            {/if}
           </section>
-        {/if}
-
-        <!-- More Videos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mt-8">
-          {#each recommendedRestSection as video (getVideoId(video))}
-            <button
-              class="group w-full text-left"
-              on:click={() => navigateToVideo(getVideoId(video))}
-              on:keydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  navigateToVideo(getVideoId(video));
-                }
-              }}
-              aria-label={`Watch ${video.snippet.title}`}
-            >
-              <VideoCard {video} />
-            </button>
-          {/each}
-        </div>
+        {/each}
       {/if}
     </div>
   </main>
@@ -758,8 +766,7 @@
     <div class="flex justify-around items-center">
       <a href="/" class="flex-1">
         <Button 
-          variant="ghost" 
-          class="w-full flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-transparent"
+          variant="ghost"           class="w-full flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-transparent"
         >
           <Home class="h-6 w-6" />
           <span class="text-[10px]">Home</span>

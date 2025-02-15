@@ -119,7 +119,7 @@
     <div class="py-3 px-6 text-[13px] text-muted-foreground">
       <p class="mb-3">About Press Copyright Contact us Creators Advertise Developers</p>
       <p class="mb-3">Terms Privacy Policy & Safety How YouTube works Test new features</p>
-      <p class="text-[12px] text-muted-foreground/70"> 2023 Google LLC</p>
+      <p class="text-[12px] text-muted-foreground/70"> 2025 Giddel Clone</p>
     </div>
   {/if}
 </aside>
