@@ -468,7 +468,7 @@
       <Button 
         variant="ghost" 
         size="icon" 
-        class="rounded-full hidden md:flex"
+        class="rounded-full flex"
       >
         <Bell class="h-6 w-6" />
       </Button>
@@ -825,6 +825,36 @@
             class="w-full"
             bind:value={searchQuery}
           />
+        </div>
+        <div class="flex">
+          <form class="flex" on:submit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}>
+            <Button 
+            type="submit"
+            variant="ghost"  
+            class="hover:bg-secondary/80 h-[40px]"
+          >
+            <Search class="h-5 w-5" />
+          </Button>  
+        </form>
+          <Button 
+                type="button"
+                variant="ghost" 
+                size="icon" 
+                class="mic-button rounded-full h-[40px] w-[40px] {isListening ? 'listening' : ''}"
+                on:click={() => {
+                  if (isListening) {
+                    stopVoiceSearch();
+                  } else {
+                    startVoiceSearch();
+                  }
+                }}
+                aria-label={isListening ? 'Stop voice search' : 'Start voice search'}
+              >
+                <Mic class="h-5 w-5 relative z-10" />
+              </Button>
         </div>
       </div>
       <div class="p-4">

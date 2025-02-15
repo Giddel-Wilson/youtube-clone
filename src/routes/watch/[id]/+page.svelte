@@ -176,9 +176,6 @@
     <Button variant="ghost" size="icon" class="rounded-full">
       <Bell class="h-5 w-5" />
     </Button>
-    <Button variant="ghost" size="icon" class="rounded-full">
-      <User class="h-5 w-5" />
-    </Button>
   </div>
 </header>
 
